@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Project/Maven2/JavaApp/src/main/java/${packagePath}/${mainClassName}.java to edit this template
- */
 package org.thoth.jwt;
 
 import io.jsonwebtoken.Jws;
@@ -12,6 +8,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.util.Base64;
 import java.util.Date;
 
@@ -19,10 +16,10 @@ import java.util.Date;
  *
  * @author mjrem
  */
-public class ThothJwt {
+public class JwtSHA256withRSAMain {
 
     public static void main(String[] args) throws Exception {
-        new ThothJwt().main();
+        new JwtSHA256withRSAMain().main();
     }
 
     public void main() throws Exception {
@@ -52,13 +49,18 @@ public class ThothJwt {
         
         // MINE
         System.out.printf("%nMINE:%n");
-        // HEADER
+        // HEADER 
+        System.out.printf("--HEADER%n");
         {
             String headerFromExampleEncoded = "eyJhbGciOiJSUzI1NiJ9";
             String headerFromExampleDecoded = new String(Base64.getUrlDecoder().decode(headerFromExampleEncoded));
             System.out.printf("%-30s: %s%n", "headerFromExampleDecoded", headerFromExampleDecoded);
         }
+        String myEncodedHeader = null;
         {
+            // actual
+            System.out.printf("%-30s: %s%n", "jwtHeader", jwtHeader);
+            
             String headerFromExampleDecoded = "{\"alg\":\"RS256\"}";
             // 1
             String myHeaderEncoding1 = Base64.getUrlEncoder().encodeToString(headerFromExampleDecoded.getBytes());
@@ -66,14 +68,24 @@ public class ThothJwt {
             // 2
             String myHeaderEncoding2 = URLEncoder.encode(Base64.getEncoder().encodeToString(headerFromExampleDecoded.getBytes()), "utf-8");
             System.out.printf("%-30s: %s  %b%n", "myHeaderEncoding2", myHeaderEncoding2, jwtHeader.equals(myHeaderEncoding2));
+            // 3
+            String myHeaderEncoding3 = Base64.getUrlEncoder().withoutPadding().encodeToString(headerFromExampleDecoded.getBytes());
+            System.out.printf("%-30s: %s  %b%n", "myHeaderEncoding3", myHeaderEncoding3, jwtHeader.equals(myHeaderEncoding3));
+            
+            myEncodedHeader = myHeaderEncoding3;
         }
         // PAYLOAD
-                {
+        System.out.printf("--PAYLOAD%n");        
+        {
             String payloadFromExampleEncoded = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
             String payloadFromExampleDecoded = new String(Base64.getUrlDecoder().decode(payloadFromExampleEncoded));
             System.out.printf("%-30s: %s%n", "payloadFromExampleDecoded", payloadFromExampleDecoded);
         }
+        String myEncodedPayload = null;
         {
+            // actual
+            System.out.printf("%-30s: %s%n", "jwtPayload", jwtPayload);
+            
             String payloadFromExampleDecoded = "{\"sub\":\"adam\",\"exp\":61475608800,\"iss\":\"info@wstutorial.com\",\"groups\":[\"user\",\"admin\"]}";
             // 1
             String myPayloadEncoding1 = Base64.getUrlEncoder().encodeToString(payloadFromExampleDecoded.getBytes());
@@ -82,16 +94,49 @@ public class ThothJwt {
             String myPayloadEncoding2 = URLEncoder.encode(Base64.getEncoder().encodeToString(payloadFromExampleDecoded.getBytes()), "utf-8");
             System.out.printf("%-30s: %s  %b%n", "myPayloadEncoding2", myPayloadEncoding2, jwtPayload.equals(myPayloadEncoding2));
             // 3
-            String myPayloadEncoding3 = URLEncoder.encode(Base64.getEncoder().withoutPadding().encodeToString(payloadFromExampleDecoded.getBytes()), "utf-8");
+            String myPayloadEncoding3 = Base64.getUrlEncoder().withoutPadding().encodeToString(payloadFromExampleDecoded.getBytes());
             System.out.printf("%-30s: %s  %b%n", "myPayloadEncoding3", myPayloadEncoding3, jwtPayload.equals(myPayloadEncoding3));
             
-            // actual
-            System.out.printf("%-30s: %s%n", "jwtPayload", jwtPayload);
+            myEncodedPayload = myPayloadEncoding3;
         }
         
         
+        // SIGNATURE
+        System.out.printf("--SIGNATURE%n"); 
+        String myEncodedSignature = null;
+        {
+            // actual
+            System.out.printf("%-30s: %s%n", "jwtSignature", jwtSignature);
+            
+            Signature privateSignature = Signature.getInstance("SHA256withRSA");
+            privateSignature.initSign(privateKey);
+            privateSignature.update((myEncodedHeader + "." + myEncodedPayload).getBytes());
+            byte[] signature = privateSignature.sign();
+            // 1
+            String mySignatueEncoding1 = Base64.getUrlEncoder().encodeToString(signature);           
+            System.out.printf("%-30s: %s  %b%n", "mySignatueEncoding1", mySignatueEncoding1, jwtSignature.equals(mySignatueEncoding1));
+            // 2
+            String mySignatueEncoding2 = URLEncoder.encode(Base64.getEncoder().encodeToString(signature), "utf-8");        
+            System.out.printf("%-30s: %s  %b%n", "mySignatueEncoding2", mySignatueEncoding2, jwtSignature.equals(mySignatueEncoding2));
+            // 3
+            String mySignatueEncoding3 = Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
+            System.out.printf("%-30s: %s  %b%n", "mySignatueEncoding3", mySignatueEncoding3, jwtSignature.equals(mySignatueEncoding3));                        
+            
+            myEncodedSignature = mySignatueEncoding3;
+        }
         
         
+        // VERIFY
+        {
+            Signature publicSignature = Signature.getInstance("SHA256withRSA");
+            publicSignature.initVerify(publicKey);
+            publicSignature.update((myEncodedHeader + "." + myEncodedPayload).getBytes());
+
+            byte[] signatureBytes = Base64.getUrlDecoder().decode(myEncodedSignature);
+
+            boolean verified = publicSignature.verify(signatureBytes);
+            System.out.printf("%-30s: %b%n", "verified", verified);
+        }
     }
 
     public String generateJwtToken(PrivateKey privateKey) {
@@ -123,56 +168,5 @@ public class ThothJwt {
         result.append(key);
         result.append("\n-----END PUBLIC KEY-----");
         return result.toString();
-    }
-    
-    /*
-    protected byte[] doSign(byte[] data) throws InvalidKeyException, java.security.SignatureException {
-        PrivateKey privateKey = (PrivateKey)key;
-        Signature sig = createSignatureInstance();
-        sig.initSign(privateKey);
-        sig.update(data);
-        return sig.sign();
-    }
-    
-    
-    protected Signature createSignatureInstance() {
-
-        Signature sig = super.createSignatureInstance();
-
-        PSSParameterSpec spec = PSS_PARAMETER_SPECS.get(alg); // this returns null
-        if (spec != null) {
-            setParameter(sig, spec);
-        }
-        return sig;
-    }
-
-    protected void setParameter(Signature sig, PSSParameterSpec spec) {
-        try {
-            doSetParameter(sig, spec);
-        } catch (InvalidAlgorithmParameterException e) {
-            String msg = "Unsupported RSASSA-PSS parameter '" + spec + "': " + e.getMessage();
-            throw new SignatureException(msg, e);
-        }
-    }
-
-    protected void doSetParameter(Signature sig, PSSParameterSpec spec) throws InvalidAlgorithmParameterException {
-        sig.setParameter(spec);
-    }
-    
-    protected Signature createSignatureInstance() {
-        try {
-            return getSignatureInstance();
-        } catch (NoSuchAlgorithmException e) {
-            String msg = "Unavailable " + alg.getFamilyName() + " Signature algorithm '" + alg.getJcaName() + "'.";
-            if (!alg.isJdkStandard() && !isBouncyCastleAvailable()) {
-                msg += " This is not a standard JDK algorithm. Try including BouncyCastle in the runtime classpath.";
-            }
-            throw new SignatureException(msg, e);
-        }
-    }
-
-    protected Signature getSignatureInstance() throws NoSuchAlgorithmException {
-        return Signature.getInstance(alg.getJcaName());  // "RS256"
-    }
-    */
+    }   
 }
