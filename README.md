@@ -22,6 +22,10 @@ https://sorenpoulsen.com/calculate-hmac-sha256-with-java
 
 https://gist.github.com/nielsutrecht/855f3bef0cf559d8d23e94e2aecd4ede
 
+https://en.wikipedia.org/wiki/HMAC
 
+https://en.wikipedia.org/wiki/Cryptographic_hash_function
+
+https://en.wikipedia.org/wiki/Hash_function
 
 

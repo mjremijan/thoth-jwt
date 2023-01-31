@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 public class JwtAsymmetricalRSAwithSHA256Test {
 
     @Test
-    public void testHMACwithSHA256() throws Exception 
+    public void testRSAwithSHA256() throws Exception 
     {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
         keyGenerator.initialize(1024);
