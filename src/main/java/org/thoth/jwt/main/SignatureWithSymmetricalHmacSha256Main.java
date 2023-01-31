@@ -19,7 +19,7 @@ public class SignatureWithSymmetricalHmacSha256Main {
             = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
     
         // SIGNATURE / VERIFY
-        // This is the zzzzz of a jwt xxxxx.yyyyy.zzzzz
+        // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
         //
         // Hash-based message authentication code(HMAC)
         // is a specific type of message authentication code 

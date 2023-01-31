@@ -22,7 +22,7 @@ public class SignatureWithAsymmetricalRsaSha256Main {
             = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
     
         // SIGNATURE
-        // This is the zzzzz of a jwt xxxxx.yyyyy.zzzzz
+        // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
         //
         // RSA (Rivest–Shamir–Adleman) is a public-key cryptosystem 
         // that is widely used for secure data transmission.
@@ -65,7 +65,7 @@ public class SignatureWithAsymmetricalRsaSha256Main {
         System.out.printf("%s%n", encryptedSignature);
         
         // VERIFY
-        // This is the zzzzz of a jwt xxxxx.yyyyy.zzzzz
+        // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
         //
         // The public key is used for verifying the signature.
         //

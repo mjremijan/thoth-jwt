@@ -9,7 +9,7 @@ import java.util.Base64;
 public class HeaderMain {
     public static void main(String[] args) {
         // JWT HEADER
-        // This is the xxxxx of a jwt xxxxx.yyyyy.zzzzz
+        // This is the xxxxx of a JWT xxxxx.yyyyy.zzzzz
         //
         // Given the following JSON document, encode it
         // using Java as defined in the JWT specifications
