@@ -9,7 +9,7 @@ import java.util.Base64;
 
 /**
  *
- * @author mjrem
+ * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
 public class SignatureWithAsymmetricalRsaSha256Main {
     public static void main(String[] args) throws Exception {
@@ -49,11 +49,12 @@ public class SignatureWithAsymmetricalRsaSha256Main {
         KeyPair kp = keyGenerator.genKeyPair();
         PublicKey publicKey = (PublicKey) kp.getPublic();
         PrivateKey privateKey = (PrivateKey) kp.getPrivate();
+        String algorithm = "SHA256withRSA";
         String signatureCreatedFromThisData 
             = encodedHeader + "." + encodedPayload;
         
         Signature privateSignature 
-            = Signature.getInstance("SHA256withRSA");
+            = Signature.getInstance(algorithm);
         privateSignature.initSign(privateKey);
         privateSignature.update(signatureCreatedFromThisData.getBytes());
         String encryptedSignature 
@@ -74,7 +75,8 @@ public class SignatureWithAsymmetricalRsaSha256Main {
         // that Clients can verify the JWT signature without
         // having to ask the Authentication Server for verification
         //
-        Signature publicSignature = Signature.getInstance("SHA256withRSA");
+        
+        Signature publicSignature = Signature.getInstance(algorithm);
         publicSignature.initVerify(publicKey);
         publicSignature.update(signatureCreatedFromThisData.getBytes());
         boolean verified = publicSignature.verify(

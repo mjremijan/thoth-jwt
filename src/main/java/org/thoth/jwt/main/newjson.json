@@ -1,0 +1,6 @@
+{
+    "sub": "adam",
+    "exp": 61475608800,
+    "iss": "info@wstutorial.com",
+    "groups": ["user", "admin"]
+}

@@ -4,7 +4,7 @@ import java.util.Base64;
 
 /**
  *
- * @author mjrem
+ * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
 public class PayloadMain {
     public static void main(String[] args) {
@@ -20,6 +20,14 @@ public class PayloadMain {
                     .encodeToString(
                         payload.getBytes()
                     );
-        System.out.printf("%s%n", payloadEncoded);
+        
+        String payloadDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(payloadEncoded)
+                );
+        
+        System.out.printf("Payload : %s%n", payload);
+        System.out.printf("Encoded: %s%n", payloadEncoded);
+        System.out.printf("Decoded: %s%n", payloadDecoded);
     }
 }

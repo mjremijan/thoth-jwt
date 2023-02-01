@@ -4,7 +4,7 @@ import java.util.Base64;
 
 /**
  *
- * @author mjrem
+ * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
 public class HeaderMain {
     public static void main(String[] args) {
@@ -20,6 +20,13 @@ public class HeaderMain {
                     .encodeToString(
                         header.getBytes()
                     );
-        System.out.printf("%s%n", headerEncoded);
+        String headerDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(headerEncoded)
+                );
+        
+        System.out.printf("Header : %s%n", header);
+        System.out.printf("Encoded: %s%n", headerEncoded);
+        System.out.printf("Decoded: %s%n", headerDecoded);
     }
 }

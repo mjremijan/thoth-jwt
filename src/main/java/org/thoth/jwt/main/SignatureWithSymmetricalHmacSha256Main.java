@@ -6,15 +6,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
- * @author mjrem
+ * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
 public class SignatureWithSymmetricalHmacSha256Main {
     public static void main(String[] args) throws Exception {
-        // See HeaderMain.java
+        // See Listing #2 for how this value is generated
         String encodedHeader 
             = "eyJhbGciOiJIUzI1NiJ9";
         
-        // See PayloadMain.java
+        // See Listing #4 for how this value is generated
         String encodedPayload 
             = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
     
@@ -53,17 +53,17 @@ public class SignatureWithSymmetricalHmacSha256Main {
         String algorithm  = "HmacSHA256";
         String secret = "thisismysupersecretkeywhichshouldonlybeontheauthenticationserver";
         SecretKeySpec key = new SecretKeySpec(secret.getBytes(), algorithm);
-        Mac mac = Mac.getInstance("HmacSHA256");
+        Mac mac = Mac.getInstance(algorithm);
         mac.init(key);
         String signatureCreatedFromThisData 
             = encodedHeader + "." + encodedPayload;
         String encryptedSignature 
-                = Base64.getUrlEncoder()
-                        .withoutPadding()
-                        .encodeToString(mac.doFinal(
-                                signatureCreatedFromThisData.getBytes()
-                            )
-                        );
+            = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(mac.doFinal(
+                            signatureCreatedFromThisData.getBytes()
+                        )
+                    );
         System.out.printf("%s%n", encryptedSignature);
     }
 }
