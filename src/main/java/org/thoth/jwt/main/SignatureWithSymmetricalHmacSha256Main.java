@@ -8,15 +8,57 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
-public class SignatureWithSymmetricalHmacSha256Main {
-    public static void main(String[] args) throws Exception {
-        // See Listing #2 for how this value is generated
-        String encodedHeader 
-            = "eyJhbGciOiJIUzI1NiJ9";
+public class SignatureWithSymmetricalHmacSha256Main 
+{
+    public static void main(String[] args) throws Exception 
+    {
+        // JWT HEADER
+        //
+        // This is the xxxxx of a JWT xxxxx.yyyyy.zzzzz
+        //
+        // Given the following JSON document, encode it
+        // using Java as defined in the JWT specifications
+        String header = "{\"alg\":\"HS256\",\"typ\": \"JWT\"}";
+        String headerEncoded 
+            = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(
+                        header.getBytes()
+                    );
+        String headerDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(headerEncoded)
+                );
         
-        // See Listing #4 for how this value is generated
-        String encodedPayload 
-            = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
+        System.out.printf("Header Plain   : %s%n", header);
+        System.out.printf("Header Encoded : %s%n", headerEncoded);
+        System.out.printf("Header Decoded : %s%n", headerDecoded);
+        
+        
+        // JWT PAYLOAD
+        //
+        // This is the yyyyy of a JWT xxxxx.yyyyy.zzzzz
+        //
+        // Given the following JSON document, encode it
+        // using Java as defined in the JWT specifications
+        String payload = "{\"sub\":\"TMJR00001\",\"name\":\"Michael J. Remijan\",\"exp\":61475608800,\"iss\":\"info@wstutorial.com\",\"groups\":[\"user\",\"admin\"]}";
+        String payloadEncoded 
+            = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(
+                        payload.getBytes()
+                    );
+        
+        String payloadDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(payloadEncoded)
+                );
+        
+        System.out.printf("%n");
+        System.out.printf("Payload Plain   : %s%n", payload);
+        System.out.printf("Payload Encoded : %s%n", payloadEncoded);
+        System.out.printf("Payload Decoded : %s%n", payloadDecoded);
+        
     
         // SIGNATURE / VERIFY
         // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
@@ -56,14 +98,18 @@ public class SignatureWithSymmetricalHmacSha256Main {
         Mac mac = Mac.getInstance(algorithm);
         mac.init(key);
         String signatureCreatedFromThisData 
-            = encodedHeader + "." + encodedPayload;
-        String encryptedSignature 
+            = headerEncoded + "." + payloadEncoded;
+        String signatureEncoded 
             = Base64.getUrlEncoder()
                     .withoutPadding()
                     .encodeToString(mac.doFinal(
                             signatureCreatedFromThisData.getBytes()
                         )
                     );
-        System.out.printf("%s%n", encryptedSignature);
+        
+        System.out.printf("%n");
+        System.out.printf("Signature Algorithm : %s%n", algorithm);
+        System.out.printf("Signature Secret    : %s%n", secret);
+        System.out.printf("Signaure Encoded    :%s%n", signatureEncoded);
     }
 }

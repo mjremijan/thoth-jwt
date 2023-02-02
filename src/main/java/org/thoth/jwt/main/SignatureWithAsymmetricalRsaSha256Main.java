@@ -11,17 +11,60 @@ import java.util.Base64;
  *
  * @author Michael Remijan mjremijan@yahoo.com @mjremijan
  */
-public class SignatureWithAsymmetricalRsaSha256Main {
-    public static void main(String[] args) throws Exception {
-        // See HeaderMain.java
-        String encodedHeader 
-            = "eyJhbGciOiJIUzI1NiJ9";
+public class SignatureWithAsymmetricalRsaSha256Main 
+{
+    public static void main(String[] args) throws Exception 
+    {
+        // JWT HEADER
+        //
+        // This is the xxxxx of a JWT xxxxx.yyyyy.zzzzz
+        //
+        // Given the following JSON document, encode it
+        // using Java as defined in the JWT specifications
+        String header = "{\"alg\":\"HS256\",\"typ\": \"JWT\"}";
+        String headerEncoded 
+            = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(
+                        header.getBytes()
+                    );
+        String headerDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(headerEncoded)
+                );
         
-        // See PayloadMain.java
-        String encodedPayload 
-            = "eyJzdWIiOiJhZGFtIiwiZXhwIjo2MTQ3NTYwODgwMCwiaXNzIjoiaW5mb0B3c3R1dG9yaWFsLmNvbSIsImdyb3VwcyI6WyJ1c2VyIiwiYWRtaW4iXX0";
+        System.out.printf("Header Plain   : %s%n", header);
+        System.out.printf("Header Encoded : %s%n", headerEncoded);
+        System.out.printf("Header Decoded : %s%n", headerDecoded);
+        
+        
+        // JWT PAYLOAD
+        //
+        // This is the yyyyy of a JWT xxxxx.yyyyy.zzzzz
+        //
+        // Given the following JSON document, encode it
+        // using Java as defined in the JWT specifications
+        String payload = "{\"sub\":\"TMJR00001\",\"name\":\"Michael J. Remijan\",\"exp\":61475608800,\"iss\":\"info@wstutorial.com\",\"groups\":[\"user\",\"admin\"]}";
+        String payloadEncoded 
+            = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(
+                        payload.getBytes()
+                    );
+        
+        String payloadDecoded
+                = new String(
+                    Base64.getUrlDecoder().decode(payloadEncoded)
+                );
+        
+        System.out.printf("%n");
+        System.out.printf("Payload Plain   : %s%n", payload);
+        System.out.printf("Payload Encoded : %s%n", payloadEncoded);
+        System.out.printf("Payload Decoded : %s%n", payloadDecoded);
+        
     
         // SIGNATURE
+        //
         // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
         //
         // RSA (Rivest–Shamir–Adleman) is a public-key cryptosystem 
@@ -51,19 +94,26 @@ public class SignatureWithAsymmetricalRsaSha256Main {
         PrivateKey privateKey = (PrivateKey) kp.getPrivate();
         String algorithm = "SHA256withRSA";
         String signatureCreatedFromThisData 
-            = encodedHeader + "." + encodedPayload;
+            = headerEncoded + "." + headerDecoded;
         
         Signature privateSignature 
             = Signature.getInstance(algorithm);
         privateSignature.initSign(privateKey);
+        
+        System.out.printf("%n");
+        System.out.printf("Algorithm    : %s%n", algorithm);
+        System.out.printf("Public Key   : %s%n", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        System.out.printf("Private Key  : %s%n", Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+        
         privateSignature.update(signatureCreatedFromThisData.getBytes());
-        String encryptedSignature 
+        String signatureEncoded 
                 = Base64.getUrlEncoder()
                         .withoutPadding()
                         .encodeToString(
                             privateSignature.sign()
                         );
-        System.out.printf("%s%n", encryptedSignature);
+        System.out.printf("%n");
+        System.out.printf("Signaure Encoded         : %s%n", signatureEncoded);
         
         // VERIFY
         // This is the zzzzz of a JWT xxxxx.yyyyy.zzzzz
@@ -80,8 +130,8 @@ public class SignatureWithAsymmetricalRsaSha256Main {
         publicSignature.initVerify(publicKey);
         publicSignature.update(signatureCreatedFromThisData.getBytes());
         boolean verified = publicSignature.verify(
-            Base64.getUrlDecoder().decode(encryptedSignature)
+            Base64.getUrlDecoder().decode(signatureEncoded)
         );
-        System.out.printf("%b%n", verified);
+        System.out.printf("Signature Verified (t/f) : %b%n", verified);
     }
 }
