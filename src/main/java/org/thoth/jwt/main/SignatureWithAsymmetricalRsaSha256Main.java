@@ -21,7 +21,7 @@ public class SignatureWithAsymmetricalRsaSha256Main
         //
         // Given the following JSON document, encode it
         // using Java as defined in the JWT specifications
-        String header = "{\"alg\":\"HS256\",\"typ\": \"JWT\"}";
+        String header = "{\"alg\":\"RS256\",\"typ\": \"JWT\"}";
         String headerEncoded 
             = Base64.getUrlEncoder()
                     .withoutPadding()
