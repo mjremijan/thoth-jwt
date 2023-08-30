@@ -94,7 +94,7 @@ public class SignatureWithAsymmetricalRsaSha256Main
         PrivateKey privateKey = (PrivateKey) kp.getPrivate();
         String algorithm = "SHA256withRSA";
         String signatureCreatedFromThisData 
-            = headerEncoded + "." + headerDecoded;
+            = headerEncoded + "." + payloadEncoded;
         
         Signature privateSignature 
             = Signature.getInstance(algorithm);
@@ -120,7 +120,7 @@ public class SignatureWithAsymmetricalRsaSha256Main
         //
         // The public key is used for verifying the signature.
         //
-        // Becuase the public key is used for creating a signature,
+        // Becuase the public key is used for verifying a signature,
         // it safe to distribute the public key to Clients so 
         // that Clients can verify the JWT signature without
         // having to ask the Authentication Server for verification
